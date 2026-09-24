@@ -36,9 +36,8 @@ def checkmate(board):
                 print("Success")
                 return          
 
-    # 4. ถ้าไม่มีหมากตัวไหนรุก King ได้ ให้แสดง Fail
     print("Fail")
-    
+
 
 def setBoard(board):
     if not isinstance(board, str) or not board.strip():
@@ -64,7 +63,6 @@ def findKing(board):
         for j in range(len(board[i])):
             if board[i][j] == "K":
                 if king is not None: 
-                    # มี King มากกว่า 1 ตัว
                     return None
                 king = (i, j)
     return king
