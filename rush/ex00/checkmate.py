@@ -1,21 +1,20 @@
-#!/usr/bin/env python3
-
 def checkmate(board):
-    
     Board2D = setBoard(board)
-    # print(setBoard(board))
 
-    if len(Board2D) != len(Board2D[0]):
-        print("Erorr")  # not square
-        return
-    
-    king = findKing(Board2D)
-
-    if king is None:
+    if not Board2D:
         print("Error")
         return
 
     n = len(Board2D)
+    for row in Board2D:
+        if len(row) != n:
+            print("Error")
+            return
+    
+    king = findKing(Board2D)
+    if king is None:
+        print("Error")
+        return
 
     for i in range(n):
         for j in range(n):
@@ -37,19 +36,23 @@ def checkmate(board):
                 print("Success")
                 return          
 
-    print("Error")
+    # 4. ถ้าไม่มีหมากตัวไหนรุก King ได้ ให้แสดง Fail
+    print("Fail")
     
+
 def setBoard(board):
+    if not isinstance(board, str) or not board.strip():
+        return []
+        
     rowsList = []
     for row in board.split("\n"):
         cleanRow = row.strip()
-        rowsList.append(cleanRow)
-    # print(rowsList)
+        if cleanRow:
+            rowsList.append(cleanRow)
 
     Board2D = []
     for r in rowsList:
         Board2D.append(list(r))
-    # print(Board2D)
 
     return Board2D
 
@@ -58,15 +61,13 @@ def findKing(board):
     king = None
     n = len(board)
     for i in range(n):
-        for j in range(n):
+        for j in range(len(board[i])):
             if board[i][j] == "K":
                 if king is not None: 
-                    print("Error")
-                    return
-                else: 
-                    king = (i, j)
+                    # มี King มากกว่า 1 ตัว
+                    return None
+                king = (i, j)
     return king
-
 
 
 def Pawn(Board2D, i, j, king):
@@ -75,11 +76,10 @@ def Pawn(Board2D, i, j, king):
     return (kingRow, kingCol) in attacks
 
 
-
 def Bishop(Board2D, i, j, king):
     n = len(Board2D)
     kingRow, kingCol = king
-    directions = [(1,1),(1,-1),(-1,1),(-1,-1)]
+    directions = [(1, 1), (1, -1), (-1, 1), (-1, -1)]
 
     for iChange, jChange in directions:
         x = i + iChange
@@ -92,13 +92,12 @@ def Bishop(Board2D, i, j, king):
             x += iChange
             y += jChange
     return False
-
 
 
 def Rook(Board2D, i, j, king):
     n = len(Board2D)
     kingRow, kingCol = king
-    directions = [(1,0),(-1,0),(0,1),(0,-1)]
+    directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
     for iChange, jChange in directions:
         x = i + iChange
@@ -113,7 +112,5 @@ def Rook(Board2D, i, j, king):
     return False
 
 
-
 def Queen(Board2D, i, j, king):
     return Rook(Board2D, i, j, king) or Bishop(Board2D, i, j, king)
-
